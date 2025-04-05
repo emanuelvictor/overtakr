@@ -1,0 +1,47 @@
+spring:
+  application.name: @name@
+
+#  http:
+#    encoding:
+#      charset: UTF-8
+#      enabled: true
+#      force: true
+
+  servlet:
+    session:
+      persistent: false
+
+management:
+  health:
+    ldap:
+      enabled: false
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: ['health', 'info', 'logfile']
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    logfile:
+      enabled: true
+      external-file: /var/log/${spring.application.name}/${spring.application.name}.log
+
+logging:
+  file:
+    name: /var/log/${spring.application.name}/${spring.application.name}.log
+  level:
+    com.emanuelvictor.api.nonfunctional.authengine.domain: INFO
+    com.emanuelvictor.api.nonfunctional.authengine.application.security.custom: INFO
+info:
+  name: auth-engine
+  description: 'Auth Engine'
+  version: @project.version@-@project.build-number@
+  environment: @active.profile@
+
+server:
+  servlet:
+    session:
+      timeout: 999999999

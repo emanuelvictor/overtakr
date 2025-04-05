@@ -1,0 +1,34 @@
+info:
+  version: @project.version@
+  app:
+    url: localhost:8081
+
+management:
+  endpoint:
+    logfile:
+      external-file: /${user.home}/${spring.application.name}.log
+
+logging:
+  file:
+    name: /${user.home}/${spring.application.name}.log
+server:
+  port: 8081
+
+# configs do eureka server
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    hostname: localhost
+    appname: auth-engine
+
+oauth:
+  endpoints:
+    users: http://localhost:8080/access-manager/users/
+    access-group-permissions: http://localhost:8080/access-manager/v1/access-group-permissions/
+    access-groups: http://localhost:8080/access-manager/v1/access-groups/
+    applications: http://localhost:8080/access-manager/applications/
+  token: http://localhost:8080/auth-engine/oauth/token
+  clientId: auth-engine
+  clientSecret: auth-engine

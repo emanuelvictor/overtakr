@@ -1,0 +1,40 @@
+# configs gerais
+spring:
+  application:
+    name: @name@
+  profiles:
+    active: @active.profile@
+
+# configs do eureka server
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    hostname: localhost
+
+#Connection timeouts
+ribbon:
+  ConnectTimeout: 10000
+  ReadTimeout: 10000
+
+zuul:
+  ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin #  https://github.com/spring-cloud/spring-cloud-netflix/issues/1250
+  routes:
+    integrator:
+      path: /integrator/**
+      serviceId: integrator
+      stripPrefix: true
+    auth-engine:
+      path: /auth-engine/**
+      serviceId: auth-engine
+      stripPrefix: true
+    inventario:
+      path: /inventario/**
+      serviceId: inventario
+      stripPrefix: true
+  sensitive-headers:
+
+

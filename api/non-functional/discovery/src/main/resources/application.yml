@@ -1,0 +1,16 @@
+# configs gerais
+spring:
+  application:
+    name: @name@
+  profiles:
+    active: @active.profile@
+
+# configs do server
+server:
+  port: 8761
+
+# configs do Eureka
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false

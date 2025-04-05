@@ -1,0 +1,8 @@
+services:
+  discovery:
+    image: 'discovery'
+    build:
+      context: ./discovery/
+    container_name: discovery
+    ports:
+      - "8761:8761"
