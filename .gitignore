@@ -1,0 +1,42 @@
+HELP.md
+package-lock.json
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!non-functional/discoverer/src/main/resources
+!**/src/test/**
+
+*/node_modules/*
+**/node_modules
+/node_modules
+node_modules/*
+/resources/modules/*
+**/resources/modules/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea/
+*.idea/*
+**.idea/
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/
