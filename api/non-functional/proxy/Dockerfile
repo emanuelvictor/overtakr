@@ -18,7 +18,7 @@ WORKDIR /app
 COPY --from=git-clone /app/overtakr /app/overtakr
 
 # Enter in directory of module and make the build
-WORKDIR /app/overtakr/api/non-functional/discovery
+WORKDIR /app/overtakr/api/non-functional/proxy
 RUN mvn clean package -DskipTests
 
 # ----------------------------------------
@@ -28,10 +28,10 @@ FROM eclipse-temurin:8-jdk-alpine
 WORKDIR /app
 
 # Copy only the jar generated
-COPY --from=build /app/overtakr/api/non-functional/discovery/target/*.jar app.jar
+COPY --from=build /app/overtakr/api/non-functional/proxy/target/*.jar app.jar
 
 # Expose port
-EXPOSE 8761
+EXPOSE 8081
 
 # Commando to run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
