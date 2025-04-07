@@ -1,12 +1,13 @@
-LABEL maintainer="Overtakr <contact@overtakr.com>"
-LABEL org.opencontainers.image.authors="Overtakr <contact@overtakr.com>"
-
 # ----------------------------------------
 # Stage 1: Clone repository (Git)
 # ----------------------------------------
 FROM alpine/git AS git-clone
 WORKDIR /app
 RUN git clone https://github.com/emanuelvictor/overtakr
+
+# Set the mainteiner
+LABEL maintainer="Overtakr <contact@overtakr.com>"
+LABEL org.opencontainers.image.authors="Overtakr <contact@overtakr.com>"
 
 # ----------------------------------------
 # Stage 2: Build of project (Maven)
@@ -18,7 +19,7 @@ WORKDIR /app
 COPY --from=git-clone /app/overtakr /app/overtakr
 
 # Enter in directory of module and make the build
-WORKDIR /app/overtakr/api/non-functional/auth-engine
+WORKDIR /app/overtakr/api/auth-engine
 RUN mvn clean package -DskipTests
 
 # ----------------------------------------
@@ -28,7 +29,7 @@ FROM eclipse-temurin:11-jdk-alpine
 WORKDIR /app
 
 # Copy only the jar generated
-COPY --from=build /app/overtakr/api/non-functional/auth-engine/target/*.jar app.jar
+COPY --from=build /app/overtakr/api/auth-engine/target/*.jar app.jar
 
 # Expose port
 EXPOSE 8081

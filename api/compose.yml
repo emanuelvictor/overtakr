@@ -2,7 +2,7 @@ services:
   discovery:
     image: 'discovery'
     build:
-      context: ./discovery
+      context: discovery
       dockerfile: Dockerfile
     container_name: discovery
     ports:
@@ -10,7 +10,7 @@ services:
   proxy:
     image: 'proxy'
     build:
-      context: ./proxy
+      context: proxy
       dockerfile: Dockerfile
     container_name: proxy
     ports:
@@ -18,7 +18,7 @@ services:
   auth-engine:
     image: 'auth-engine'
     build:
-      context: ./auth-engine
+      context: auth-engine
       dockerfile: Dockerfile
     container_name: auth-engine
     ports:
