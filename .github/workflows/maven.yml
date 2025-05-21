@@ -13,6 +13,11 @@ on:
     branches:
       - main
 
+  pull_request:  # Triggered when a pull request is opened or synchronized
+    types:
+      - opened
+      - synchronize
+
 jobs:
   build:
     runs-on: ubuntu-latest
