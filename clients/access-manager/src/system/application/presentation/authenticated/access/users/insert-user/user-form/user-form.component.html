@@ -1,0 +1,61 @@
+<form [formGroup]='form' (ngSubmit)='saveEntity(form)' novalidate>
+
+  <!--toolbar div-->
+  <ng-content select='[toolbar]'></ng-content>
+
+  <mat-card>
+    <mat-slide-toggle [(ngModel)]='entity.root'
+                      style='margin-bottom: 15px'
+                      [ngModelOptions]='{standalone: true}'
+                      *ngIf='authenticationService.user.root'>
+      Root
+    </mat-slide-toggle>
+
+    <mat-form-field flex style="display: block">
+      <mat-label>Nome de Usuário</mat-label>
+      <input maxlength='150' required
+             formControlName='username'
+             matInput placeholder='Nome'
+             [(ngModel)]='entity.username'
+             id='username' name='username'/>
+      <mat-error>
+        Esse campo é obrigatório
+      </mat-error>
+    </mat-form-field>
+
+    <vertical-space [verticalMargin]='5'></vertical-space>
+
+    <mat-form-field flex style="display: block">
+      <mat-label>Nome</mat-label>
+      <input maxlength='150' matInput
+             [(ngModel)]='entity.name'
+             required formControlName='name'
+             id='name' name='name' placeholder='Nome'/>
+      <mat-error>
+        Esse campo é obrigatório
+      </mat-error>
+    </mat-form-field>
+
+    <vertical-space [verticalMargin]='5'></vertical-space>
+
+    <root-form [(group)]='entity.group' flex [form]='form'>
+    </root-form>
+
+    <vertical-space [verticalMargin]='5'></vertical-space>
+
+    <mat-form-field flex style="display: block">
+      <mat-label>Tenant</mat-label>
+      <input formControlName='tenant'
+             placeholder='Tenant' name='tenant'
+             matInput [(ngModel)]='entity.tenant'
+             (keyup)="debounce(this,listTenants)" id="tenant"
+             [matAutocomplete]='auto' (blur)='normalizeTenant()'>
+
+      <mat-autocomplete [displayWith]='displayIdentificationAccessGroup' #auto='matAutocomplete'>
+        <mat-option [value]='tenant' *ngFor='let tenant of tenants'>
+          {{ tenant.identification }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </mat-card>
+</form>

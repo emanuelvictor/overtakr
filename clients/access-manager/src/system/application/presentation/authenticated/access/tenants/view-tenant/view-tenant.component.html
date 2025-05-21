@@ -1,0 +1,29 @@
+<div class='toolbar' layout='row' flex>
+  <div layout='column'>
+    <div class='headline' [innerHTML]="'Tenant / Detalhes'"></div>
+    <div class='subhead' [innerHTML]="'Tenant'"></div>
+  </div>
+  <div layout='row' layout-align='end center' flex>
+    <button mat-raised-button type='button' routerLink='../'>
+      <mat-icon>arrow_back</mat-icon>
+      <span>Voltar</span>
+    </button>
+  </div>
+  <div [@fadeInOut]>
+    <button color='primary' class='ml-25' mat-raised-button (click)='takeOverTenant()' disabled='{{authenticationService.tenantIdentification === tenant.identification}}'>
+      <mat-icon>vpn_key</mat-icon>
+      <span>{{ authenticationService.tenantIdentification === tenant.identification ? 'Tenant assumido' : 'Assumir tenant' }}</span>
+    </button>
+  </div>
+</div>
+
+<mat-card>
+  <tenant-data-view [tenant]='tenant'>
+    <div tenantLabelIdentification layout="row" *ngIf='tenant?.identification'>
+      <div layout="column" flex>
+        <label class="title">Identificação:</label>
+        <label class="text">{{ tenant.identification }}</label>
+      </div>
+    </div>
+  </tenant-data-view>
+</mat-card>
