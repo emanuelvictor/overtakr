@@ -59,10 +59,10 @@ public class HibernateConfig {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
         em.setPackagesToScan(
-                "com.emanuelvictor.accessmanager.domain.entities",
-                "com.emanuelvictor.accessmanager.application.ports.secundaries.jpa",
-                "com.emanuelvictor.tenants.application.ports.secundaries.jpa",
-                "com.emanuelvictor.stock.application.ports.secundaries.jpa"
+                "com.emanuelvictor.accessmanager.domain.model",
+                "com.emanuelvictor.accessmanager.infrastructure.jpa",
+                "com.emanuelvictor.stock.infrastructure.jpa",
+                "com.emanuelvictor.payments.infrastructure.jpa"
         );
 
         em.setJpaVendorAdapter(jpaVendorAdapter());

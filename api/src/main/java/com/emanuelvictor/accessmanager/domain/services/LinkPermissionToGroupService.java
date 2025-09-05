@@ -1,11 +1,11 @@
 package com.emanuelvictor.accessmanager.domain.services;
 
-import com.emanuelvictor.accessmanager.domain.entities.Group;
-import com.emanuelvictor.accessmanager.domain.entities.GroupPermission;
-import com.emanuelvictor.accessmanager.domain.entities.Permission;
-import com.emanuelvictor.accessmanager.application.ports.secundaries.jpa.GroupPermissionRepository;
-import com.emanuelvictor.accessmanager.application.ports.secundaries.jpa.GroupRepository;
-import com.emanuelvictor.accessmanager.application.ports.secundaries.jpa.PermissionRepository;
+import com.emanuelvictor.accessmanager.domain.model.Group;
+import com.emanuelvictor.accessmanager.domain.model.GroupPermission;
+import com.emanuelvictor.accessmanager.domain.model.Permission;
+import com.emanuelvictor.accessmanager.infrastructure.jpa.repository.GroupPermissionRepository;
+import com.emanuelvictor.accessmanager.infrastructure.jpa.repository.GroupRepository;
+import com.emanuelvictor.accessmanager.infrastructure.jpa.repository.PermissionRepository;
 
 /**
  * @author Emanuel Victor

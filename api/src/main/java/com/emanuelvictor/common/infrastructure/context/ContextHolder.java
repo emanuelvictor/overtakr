@@ -1,6 +1,6 @@
 package com.emanuelvictor.common.infrastructure.context;
 
-import com.emanuelvictor.accessmanager.domain.entities.User; // TODO coupling
+import com.emanuelvictor.accessmanager.domain.model.User; // TODO coupling
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
