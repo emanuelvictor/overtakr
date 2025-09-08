@@ -41,8 +41,7 @@ export class ViewProductComponent implements OnInit {
               private messageService: MessageService,
               private homeView: AuthenticatedViewComponent,
               private productRepository: ProductRepository) {
-
-    this.product.id = +this.activatedRoute.snapshot.params.id || null;
+    this.product.id = this.activatedRoute.snapshot.params.id || null;
     homeView.toolbar.subhead = 'Produto / Detalhes';
 
   }
@@ -78,7 +77,7 @@ export class ViewProductComponent implements OnInit {
         if (accept) {
           this.productRepository.delete(product.id)
             .then(() => {
-              this.router.navigate(['access/products']);
+              this.router.navigate(['stocks/products']);
               this.messageService.toastSuccess('Registro excluído com sucesso')
             })
         }

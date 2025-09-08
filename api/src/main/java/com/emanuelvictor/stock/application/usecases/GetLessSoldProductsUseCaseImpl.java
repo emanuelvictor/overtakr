@@ -1,4 +1,4 @@
-package com.emanuelvictor.stock.application.usecases.getlesssoldproducts;
+package com.emanuelvictor.stock.application.usecases;
 
 import com.emanuelvictor.stock.domain.services.GetLessSoldProducts;
 import lombok.RequiredArgsConstructor;

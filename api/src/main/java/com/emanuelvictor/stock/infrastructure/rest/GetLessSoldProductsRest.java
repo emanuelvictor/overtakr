@@ -1,6 +1,6 @@
 package com.emanuelvictor.stock.infrastructure.rest;
 
-import com.emanuelvictor.stock.application.usecases.getlesssoldproducts.GetLessSoldProductsUseCaseImpl;
+import com.emanuelvictor.stock.application.usecases.GetLessSoldProductsUseCaseImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

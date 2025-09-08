@@ -62,7 +62,8 @@ public class HibernateConfig {
                 "com.emanuelvictor.accessmanager.domain.model",
                 "com.emanuelvictor.accessmanager.infrastructure.jpa",
                 "com.emanuelvictor.stock.infrastructure.jpa",
-                "com.emanuelvictor.payments.infrastructure.jpa"
+                "com.emanuelvictor.payments.infrastructure.jpa",
+                "com.emanuelvictor.common.infrastructure.audit"
         );
 
         em.setJpaVendorAdapter(jpaVendorAdapter());

@@ -1,0 +1,1 @@
+alter table product add column quantity_available integer not null default 0;

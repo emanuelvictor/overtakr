@@ -40,9 +40,9 @@ export class UpdateProductComponent implements OnInit {
    */
   back() {
     if (this.activatedRoute.snapshot.routeConfig.path === 'edit/:id')
-      this.router.navigate(['access/products']);
+      this.router.navigate(['stocks/products']);
     else
-      this.router.navigate(['access/products/' + (+this.activatedRoute.snapshot.params.id)]);
+      this.router.navigate(['stocks/products/' + this.activatedRoute.snapshot.params.id]);
   }
 
   /**
@@ -56,7 +56,7 @@ export class UpdateProductComponent implements OnInit {
    *
    */
   public findById() {
-    this.productRepository.findById(+this.activatedRoute.snapshot.params.id)
+    this.productRepository.findById(this.activatedRoute.snapshot.params.id)
       .subscribe((result) =>
         this.product = result
       );
@@ -75,7 +75,7 @@ export class UpdateProductComponent implements OnInit {
 
     this.productRepository.save(this.product)
       .then(() => {
-        this.router.navigate(['access/products']);
+        this.router.navigate(['stocks/products']);
         this.messageService.toastSuccess();
       });
   }

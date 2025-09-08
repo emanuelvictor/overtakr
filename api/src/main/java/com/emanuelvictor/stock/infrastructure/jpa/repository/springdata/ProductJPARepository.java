@@ -1,6 +1,6 @@
 package com.emanuelvictor.stock.infrastructure.jpa.repository.springdata;
 
-import com.emanuelvictor.stock.infrastructure.jpa.entity.ProductJPA;
+import com.emanuelvictor.stock.infrastructure.jpa.entities.ProductJPA;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
