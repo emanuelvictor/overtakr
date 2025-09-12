@@ -1,7 +1,5 @@
-// import {Group} from "./group.model";
-// import {Tenant} from "./tenant.model";
-import { Person } from './person';
-import { UserDetails } from "../../../common/domain/model/user-details";
+import {Person} from './person';
+import {UserDetails} from "../../../common/domain/model/user-details";
 
 export class User extends Person implements UserDetails {
 
@@ -13,9 +11,10 @@ export class User extends Person implements UserDetails {
   public root: boolean = false;
   public username?: string;
   public authorities: any;
+
   // public tenant: Tenant;
 
-  constructor(id?: number) {
+  constructor(id?: number | string | undefined) {
     super();
     if (id)
       this.id = id;
@@ -23,6 +22,7 @@ export class User extends Person implements UserDetails {
       this.root = false;
   }
 
+  // @ts-ignore
   get isRoot(): boolean {
     return this.root;
   }

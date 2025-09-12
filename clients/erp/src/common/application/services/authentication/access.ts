@@ -12,7 +12,7 @@ export class Access extends User {
 
 
   public constructor(access?: Access) {
-    super(access?.id);
+    super(access ? access.id : undefined);
     if (access) {
       this.refresh_token = access.refresh_token;
       this.access_token = access.access_token;

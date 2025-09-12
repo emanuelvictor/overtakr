@@ -5,10 +5,7 @@ import { AuthenticationService } from "../../common/application/services/authent
 @Component({
   "selector": 'app-root',
   template: `
-  <nav>
    <router-outlet/>
-   <button (click)=logout()>logout</button>
-   </nav>
   `, standalone: false
 })
 export class AppRootComponent {

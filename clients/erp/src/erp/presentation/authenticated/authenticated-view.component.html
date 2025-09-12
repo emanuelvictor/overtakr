@@ -1,1 +1,103 @@
-<router-outlet/>
+<mat-toolbar class='mat-elevation-z2 sistema-toolbar' style='background-color : #fff; padding: 0'>
+  <div style='margin-left: 30px;margin-right: 30px' fxFlex fxLayout='row'>
+    <button mat-icon-button (click)='sidenav.toggle()' fxHide.gt-sm>
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <div fxLayoutAlign='start center'
+         fxFlex.xs='80' fxFlex.gt-xs='15'
+         fxFlex.sm='75' fxLayout='row' fxFlex
+         fxFlex.gt-sm='10' fxFlex.gt-md='20'>
+    </div>
+
+    <div fxFlex fxHide.sm>
+      <div fxFlex fxLayout='row' fxLayoutAlign='center center' class="sistema-header">
+        <a routerLinkActive mat-button fxHide.xs #rlaAccess='routerLinkActive'
+           [ngClass]="{'menu-active': rlaAccess.isActive}" [routerLink]="'/configurations'"
+           *hasPermission="['root',
+                            'root.access-manager',
+                            'root.access-manager.users', 'root.access-manager.users.read',
+                            'root.access-manager.groups', 'root.access-manager.groups.read',
+                            'root.access-manager.tenants', 'root.access-manager.tenants.read']; operation 'OR'">
+          <mat-icon>tune</mat-icon>
+          <span>Configurações</span>
+        </a>
+        <a routerLinkActive mat-button fxHide.xs #rlaAccess='routerLinkActive'
+           [ngClass]="{'menu-active': rlaAccess.isActive}" [routerLink]="'/stocks'"
+           *hasPermission="['root',
+                            'root.stocks',
+                            'root.stocks.products', 'root.stocks.products.read',
+                            'root.stocks.stocks', 'root.stocks.stocks.read']; operation 'OR'">
+          <mat-icon>shop</mat-icon>
+          <span>Estoque</span>
+        </a>
+      </div>
+    </div>
+
+    <div fxFlex='20' fxLayout='row' fxLayoutAlign='end center' fxHide.xs>
+      <div style='cursor: pointer; color: #4C4C4C'
+           [matMenuTriggerFor]='menu' fxLayout='row'
+           fxLayoutGap fxLayoutAlign='end center'>
+
+        <button mat-button class='header-button'>
+          {{ user?.name ? (user?.name | userInitials) : user?.username }}
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <mat-menu #menu='matMenu'>
+      <button (click)='openDialogChangePassword()'
+              *ngIf='!user?.internal' mat-menu-item
+              style='color: #4C4C4C'>
+        <span>Alterar senha</span>
+      </button>
+      <button mat-menu-item (click)='logout()' style='color: #4C4C4C'>
+        <mat-icon>power_settings_new</mat-icon>
+        <span>Sair</span>
+      </button>
+    </mat-menu>
+  </div>
+</mat-toolbar>
+
+<mat-sidenav-container style="height: calc(100vh - 64px);">
+
+  <!-- MENU LATERAL | GAVETA | DRAWER | SANDWICH MENU | COMO QUEIRA CHAMAR-->
+  <mat-sidenav #sidenav mode='over' [opened]='false'>
+
+    <mat-nav-list class='pad-none' *ngIf="user" fxFlex>
+      <mat-list class='pad-none' role='list'>
+        <mat-list-item [ngClass]="{'menu-active': rlaAccess.isActive}"
+                       class='menu-routers' (click)='sidenav.close()' routerLinkActive
+                       #rlaAccess='routerLinkActive' [routerLink]="'/configurations'" role='listitem'
+                       *hasPermission="['root',
+                                        'root.access-manager',
+                                        'root.access-manager.users', 'root.access-manager.users.read',
+                                        'root.access-manager.groups', 'root.access-manager.groups.read',
+                                        'root.access-manager.tenants', 'root.access-manager.tenants.read']; operation 'OR'">
+          <div fxLayout='row' class="menu-item">
+            <mat-icon>tune</mat-icon>
+            <h3>Configurações</h3>
+          </div>
+        </mat-list-item>
+
+        <mat-list-item [ngClass]="{'menu-active': rlaAccess.isActive}"
+                       class='menu-routers' (click)='sidenav.close()' routerLinkActive
+                       #rlaAccess='routerLinkActive' [routerLink]="'/stocks'" role='listitem'
+                       *hasPermission="['root',
+                                        'root.stocks',
+                                        'root.stocks.products', 'root.stocks.products.read',
+                                        'root.stocks.stocks', 'root.stocks.stocks.read']; operation 'OR'">
+          <div fxLayout='row' class="menu-item">
+            <mat-icon>shop</mat-icon>
+            <h3>Estoque</h3>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </mat-nav-list>
+
+  </mat-sidenav>
+
+  <router-outlet></router-outlet>
+
+</mat-sidenav-container>

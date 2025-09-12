@@ -1,6 +1,7 @@
 import { IWrite } from '../interfaces/IWrite';
 import { IRead } from '../interfaces/IRead';
 import { HttpClient } from '@angular/common/http';
+// @ts-ignore
 import { Observable } from 'rxjs';
 import { environment } from '../../../../application/environments/environment';
 import { PageSerialize } from '../../page-serialize/page-serialize';
@@ -28,11 +29,11 @@ export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
     return this.httpClient.put<T>(this.collectionName + '/' + id, item).toPromise();
   }
 
-  delete(id: number): Promise<void> {
+  delete(id: number | string | undefined): Promise<void> {
     return this.httpClient.delete<void>(this.collectionName + '/' + id).toPromise();
   }
 
-  findById(id: number): Observable<T> {
+  findById(id: number | string | undefined): Observable<T> {
     return this.httpClient.get<T>(this.collectionName + '/' + id);
   }
 
@@ -48,10 +49,6 @@ export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
 
   findAll(): Observable<T[]> {
     return this.httpClient.get<T[]>(this.collectionName);
-  }
-
-  updateEnable(id: number): Promise<boolean | undefined> {
-    return this.httpClient.put<boolean>(this.collectionName + '/enable', id).toPromise();
   }
 
 }

@@ -1,0 +1,83 @@
+// @ts-ignore
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AuthenticatedViewComponent} from '../../../authenticated-view.component';
+import {Product} from '../../../../../domain/model/product';
+import {MessageService} from '../../../../../../common/application/services/message.service';
+import {ProductRepository} from '../../../../../domain/repositories/product.repository';
+
+// @ts-ignore
+@Component({
+  selector: 'update-product',
+  templateUrl: 'update-product.component.html', standalone: false
+})
+export class UpdateProductComponent implements OnInit {
+
+
+  /**
+   *
+   */
+  product: Product = new Product();
+
+  /**
+   *
+   * @param router
+   * @param homeView
+   * @param activatedRoute
+   * @param messageService
+   * @param productRepository
+   */
+  constructor(private router: Router,
+              private activatedRoute: ActivatedRoute,
+              private messageService: MessageService,
+              private homeView: AuthenticatedViewComponent,
+              private productRepository: ProductRepository) {
+    homeView.toolbar.subhead = 'Produto / Editar';
+  }
+
+  /**
+   *
+   */
+  back() {
+    if (this.activatedRoute.snapshot.routeConfig !== null && this.activatedRoute.snapshot.routeConfig.path === 'edit/:id')
+      this.router.navigate(['stocks/products']);
+    else
+      this.router.navigate(['stocks/products/' + this.activatedRoute.snapshot.params['id']]);
+  }
+
+  /**
+   *
+   */
+  ngOnInit() {
+    this.findById();
+  }
+
+  /**
+   *
+   */
+  public findById() {
+    this.productRepository.findById(this.activatedRoute.snapshot.params['id'])
+      .subscribe((result: Product) =>
+        this.product = result
+      );
+  }
+
+  /**
+   *
+   * @param form
+   */
+  public save(form: { invalid: any; }) {
+
+    if (form.invalid) {
+      this.messageService.toastWarning();
+      return;
+    }
+
+    this.productRepository.save(this.product)
+      .then(() => {
+        this.router.navigate(['stocks/products']);
+        this.messageService.toastSuccess();
+      });
+  }
+
+}

@@ -1,12 +1,13 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, NavigationExtras, Router, RouterStateSnapshot } from "@angular/router";
-import { map, Observable } from 'rxjs';
-import { UserDetails } from '../../../domain/model/user-details';
-import { environment } from '../../environments/environment';
-import { User } from '../../../../erp/domain/model/user';
-import { getParameterByName, parseJwt } from '../../../infrastructure/utils/utils';
-import { Access } from './access';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router, RouterStateSnapshot} from "@angular/router";
+// @ts-ignore
+import {Observable} from 'rxjs';
+import {UserDetails} from '../../../domain/model/user-details';
+import {environment} from '../../environments/environment';
+import {User} from '../../../../erp/domain/model/user';
+import {getParameterByName, parseJwt} from '../../../infrastructure/utils/utils';
+import {Access} from './access';
 
 @Injectable()
 export class AuthenticationService implements CanActivate, CanActivateChild {
@@ -93,18 +94,27 @@ export class AuthenticationService implements CanActivate, CanActivateChild {
     return this.getPromiseLoggedUserInstance
   }
 
+  public getObservedLoggedUser(): Observable<UserDetails | undefined> {
+    return new Observable((observer: {
+      next: (arg0: UserDetails | undefined) => void;
+      error: (arg0: any) => void;
+    }) => {
+      this.getPromiseLoggedUser().then(result => observer.next(result)).catch(err => observer.error(err))
+    })
+  }
+
   public getAccessTokenByAuthorizationCode(authorizationCode: string): Promise<Access | undefined> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/x-www-form-urlencoded');
     const body = `grant_type=authorization_code&code=${authorizationCode}&redirect_uri=${this.origin}&client_id=browser&client_secret=browser`;
-    return this.http.post<Access>(`${environment.SSO}/oauth2/token`, body, { headers }).toPromise();
+    return this.http.post<Access>(`${environment.SSO}/oauth2/token`, body, {headers}).toPromise();
   }
 
   public getAccessTokenByRefreshToken(refreshToken?: string): Observable<Access> { // TODO must return a promise too
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/x-www-form-urlencoded');
     const body = `grant_type=refresh_token&refresh_token=${refreshToken}&client_id=browser&client_secret=browser`;
-    return this.http.post<Access>(`${environment.SSO}/oauth2/token`, body, { headers });
+    return this.http.post<Access>(`${environment.SSO}/oauth2/token`, body, {headers});
   }
 
   private static extractUserFromAccessToken(access: Access): User | undefined {
