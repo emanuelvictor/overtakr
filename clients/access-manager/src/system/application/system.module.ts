@@ -58,26 +58,14 @@ import {SystemComponent} from "./presentation/system.component";
 import {
     GroupFormComponent
 } from "./presentation/authenticated/access/groups/insert-group/group-form/group-form.component";
-import {
-    ViewGroupComponent
-} from "./presentation/authenticated/access/groups/view-group/view-group.component";
-import {
-    InsertGroupComponent
-} from "./presentation/authenticated/access/groups/insert-group/insert-group.component";
-import {
-    UpdateGroupComponent
-} from "./presentation/authenticated/access/groups/update-group/update-group.component";
+import {ViewGroupComponent} from "./presentation/authenticated/access/groups/view-group/view-group.component";
+import {InsertGroupComponent} from "./presentation/authenticated/access/groups/insert-group/insert-group.component";
+import {UpdateGroupComponent} from "./presentation/authenticated/access/groups/update-group/update-group.component";
 import {UserViewComponent} from "./presentation/authenticated/access/users/user-view.component";
-import {
-    ConsultUsersComponent
-} from "./presentation/authenticated/access/users/consult-users/consult-users.component";
+import {ConsultUsersComponent} from "./presentation/authenticated/access/users/consult-users/consult-users.component";
 import {ViewUserComponent} from "./presentation/authenticated/access/users/view-user/view-user.component";
-import {
-    InsertUserComponent
-} from "./presentation/authenticated/access/users/insert-user/insert-user.component";
-import {
-    UserFormComponent
-} from "./presentation/authenticated/access/users/insert-user/user-form/user-form.component";
+import {InsertUserComponent} from "./presentation/authenticated/access/users/insert-user/insert-user.component";
+import {UserFormComponent} from "./presentation/authenticated/access/users/insert-user/user-form/user-form.component";
 import {
     LinkPermissionsComponent
 } from "./presentation/authenticated/access/groups/insert-group/group-form/link-permissions/link-permissions.component";
@@ -90,9 +78,7 @@ import {
 import {
     UpdatePasswordDialogComponent
 } from "./presentation/authenticated/access/users/update-user/update-password/update-password-dialog.component";
-import {
-    UpdateUserComponent
-} from "./presentation/authenticated/access/users/update-user/update-user.component";
+import {UpdateUserComponent} from "./presentation/authenticated/access/users/update-user/update-user.component";
 import {
     ConsultGroupsComponent
 } from "./presentation/authenticated/access/groups/consult-groups/consult-groups.component";
@@ -108,15 +94,11 @@ import {AccessGroupPermissionRepository} from "../domain/repository/accessGroupP
 import {
     TenantFormComponent
 } from "./presentation/authenticated/access/tenants/insert-tenant/tenant-form/tenant-form.component";
-import {
-    InsertTenantComponent
-} from "./presentation/authenticated/access/tenants/insert-tenant/insert-tenant.component";
+import {InsertTenantComponent} from "./presentation/authenticated/access/tenants/insert-tenant/insert-tenant.component";
 import {
     ConsultTenantsComponent
 } from "./presentation/authenticated/access/tenants/consult-tenants/consult-tenants.component";
-import {
-    ViewTenantComponent
-} from "./presentation/authenticated/access/tenants/view-tenant/view-tenant.component";
+import {ViewTenantComponent} from "./presentation/authenticated/access/tenants/view-tenant/view-tenant.component";
 import {TenantsViewComponent} from "./presentation/authenticated/access/tenants/tenants-view.component";
 import {
     TenantDataViewComponent
@@ -141,6 +123,11 @@ import {
 import {ProductRepository} from "../domain/repository/product.repository";
 import {ProductsViewComponent} from "./presentation/authenticated/stock/products/products-view.component";
 import {InventoryViewComponent} from "./presentation/authenticated/stock/inventory-view.component";
+import {TestAccessComponent} from "./presentation/authenticated/access/users/test-access/test-access.component";
+import {
+    ConsultSessionsComponent
+} from "./presentation/authenticated/access/users/view-user/consult-sessions/consult-sessions.component";
+import {SessionRepository} from "../domain/repository/session.repository";
 
 const appearance: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -234,7 +221,8 @@ export function customTranslateLoader(http: HttpClient) {
         RootFormComponent,
         LinkPermissionsComponent,
         UpdatePasswordComponent,
-
+        TestAccessComponent,
+        ConsultSessionsComponent,
 
         DataComponent,
 
@@ -281,6 +269,7 @@ export function customTranslateLoader(http: HttpClient) {
         TenantRepository,
         AccessGroupPermissionRepository,
         ProductRepository,
+        SessionRepository,
 
         // Services
         Describer,

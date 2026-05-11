@@ -193,6 +193,9 @@ registerLocaleData(localePt, 'pt-BR');
     },
     provideZoneChangeDetection({eventCoalescing: true}),
   ],
+  exports: [
+    VerticalSpaceComponent
+  ],
   bootstrap: [AppRootComponent]
 })
 export class ErpModule {

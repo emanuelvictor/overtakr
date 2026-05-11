@@ -4,11 +4,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/mergeMap';
 import {Injectable} from '@angular/core';
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
-
-
-import {Router} from '@angular/router';
 import {MessageService} from '../../domain/services/message.service';
-import {MatSnackBar} from "@angular/material";
 import {AuthenticationService} from "../../domain/services/authentication.service";
 import {Access} from "../../infrastructure/authentication/access";
 
@@ -102,6 +98,9 @@ export class Interceptor implements HttpInterceptor {
 
       if (res.status === 403)
         this.error('Acesso negado!')
+
+      if (res.status === 401)
+        this.error( 'Acesso negado!');
 
       return this.innerHandler(res);
     };

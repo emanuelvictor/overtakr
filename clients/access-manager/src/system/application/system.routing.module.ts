@@ -40,6 +40,7 @@ import {
   UpdateProductComponent
 } from "./presentation/authenticated/stock/products/update-product/update-product.component";
 import {ViewProductComponent} from "./presentation/authenticated/stock/products/view-product/view-product.component";
+import {TestAccessComponent} from "./presentation/authenticated/access/users/test-access/test-access.component";
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -89,7 +90,10 @@ const routes: Routes = [
               {path: 'insert', component: InsertTenantComponent},
               {path: ':id', component: ViewTenantComponent}
             ]
-          }
+          },
+            {
+                path: 'test-access', component: TestAccessComponent,
+            }
         ]
       },
       {

@@ -1,9 +1,15 @@
 package com.emanuelvictor.common.infrastructure.authorization;
 
+import com.emanuelvictor.accessmanager.domain.model.Group;
+import com.emanuelvictor.accessmanager.domain.model.GroupPermission;
+import com.emanuelvictor.accessmanager.domain.model.Tenant;
+import com.emanuelvictor.accessmanager.domain.model.User;
 import com.emanuelvictor.accessmanager.infrastructure.jpa.repository.GroupPermissionRepository;
 import com.emanuelvictor.accessmanager.infrastructure.jpa.repository.UserRepository;
-import com.emanuelvictor.accessmanager.domain.model.GroupPermission;
-import com.emanuelvictor.accessmanager.domain.model.User;
+import com.emanuelvictor.common.infrastructure.authorization.mixin.GroupMixin;
+import com.emanuelvictor.common.infrastructure.authorization.mixin.TenantMixin;
+import com.emanuelvictor.common.infrastructure.authorization.mixin.UserMixin;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -12,6 +18,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -21,16 +28,20 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.jackson2.OAuth2AuthorizationServerJackson2Module;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
@@ -54,7 +65,6 @@ import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -102,35 +112,60 @@ public class AuthServerConfig {
         return (context) -> {
             if (OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())) {
                 context.getClaims().claims((claims) -> {
-                    Set<String> authorities = AuthorityUtils.authorityListToSet(context.getPrincipal().getAuthorities())
+
+                    // Authorities
+                    final var authorities = AuthorityUtils.authorityListToSet(context.getPrincipal().getAuthorities())
                             .stream()
                             .map(c -> c.replaceFirst("^ROLE_", ""))
                             .collect(Collectors.collectingAndThen(Collectors.toSet(), Collections::unmodifiableSet));
                     claims.put("authorities", authorities);
+
+                    // Tenant
                     if (((User) context.getPrincipal().getPrincipal()).getTenant() != null)
                         claims.put("tenantIdentification", ((User) context.getPrincipal().getPrincipal()).getTenant().getIdentification());
+
+                    // sid — vem do atributo gravado na autorização durante o /oauth2/authorize
+                    String sid = null;
+                    if (context.getAuthorization() != null) {
+                        sid = context.getAuthorization().getAttribute("sid");
+                    }
+
+                    if (sid != null) claims.put("sid", sid);
                 });
             }
         };
     }
 
     @Bean
-    public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder) {
-        String encodedSecret = passwordEncoder.encode("browser");
+    public OAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate,
+                                                           RegisteredClientRepository registeredClientRepository) {
+        final var classLoader = JdbcOAuth2AuthorizationService.class.getClassLoader();
 
+        final var mapper = new ObjectMapper();
+        mapper.registerModules(SecurityJackson2Modules.getModules(classLoader));
+        mapper.registerModule(new OAuth2AuthorizationServerJackson2Module());
+        mapper.addMixIn(Group.class, GroupMixin.class);
+        mapper.addMixIn(User.class, UserMixin.class);
+        mapper.addMixIn(Tenant.class, TenantMixin.class);
+
+        return new SidAwareJdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository, mapper);
+    }
+
+    @Bean
+    public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder) {
+        final var encodedSecret = passwordEncoder.encode("browser");
         // In memory for now, we need migrate it to database when use microservices
-        RegisteredClient client = RegisteredClient.withId("browser")
+        final var client = RegisteredClient.withId("browser")
                 .clientId("browser")
                 .clientSecret(encodedSecret)
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri("http://localhost:8080/access-manager")
-                .redirectUri("http://localhost:8080/access-manager/")
-                .redirectUri("http://localhost:8080")
-                .redirectUri("http://localhost:8080/")
+                .redirectUri("http://localhost:8089/access-manager")
+                .redirectUri("http://localhost:8089/access-manager/")
+                .redirectUri("http://localhost:8089")
+                .redirectUri("http://localhost:8089/")
                 .redirectUri("http://localhost:4200")
                 .redirectUri("http://localhost:4200/")
                 .scope(OidcScopes.OPENID)
@@ -142,7 +177,7 @@ public class AuthServerConfig {
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(Duration.ofHours(1))
                         .refreshTokenTimeToLive(Duration.ofDays(30))
-                        .reuseRefreshTokens(true)
+                        .reuseRefreshTokens(false)
                         .build())
                 .build();
 
@@ -151,7 +186,9 @@ public class AuthServerConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain authorizationServerFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain authorizationServerFilterChain(HttpSecurity http, ResourceServerNotifier resourceServerNotifier,
+                                                              OAuth2AuthorizationService authorizationService) throws Exception {
+
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
@@ -164,14 +201,32 @@ public class AuthServerConfig {
                             ));
                         })
                 )
+//                    .tokenRevocationEndpoint(revocation -> revocation
+//                            .revocationResponseHandler((request, response, authentication) -> {
+//                                var token = (OAuth2TokenRevocationAuthenticationToken) authentication;
+//
+//                                var authorization = authorizationService.findByToken(token.getToken(), OAuth2TokenType.REFRESH_TOKEN);
+//                                if (authorization == null)
+//                                    authorization = authorizationService.findByToken(token.getToken(), OAuth2TokenType.ACCESS_TOKEN);
+//
+//                                if (authorization != null) {
+//                                    final var accessToken = authorization.getAccessToken();
+//                                    if (accessToken != null && accessToken.getClaims() != null) {
+//                                        final var sid = (String) accessToken.getClaims().get("sid");
+//                                        if (sid != null) {
+//                                            resourceServerNotifier.revoke(sid);
+//                                        }
+//                                    }
+//                                }
+//
+//                                response.setStatus(HttpServletResponse.SC_OK);
+//                            })
+//                    )
                 .oidc(Customizer.withDefaults());
 
         http.exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
                 .cors(Customizer.withDefaults());
-
-//        // Desabilita CSRF para os endpoints OAuth2 // TODO verificar necessidade
-//        http.csrf(csrf -> csrf.ignoringRequestMatchers("/oauth2/**"));
 
         return http.build();
     }
@@ -198,7 +253,6 @@ public class AuthServerConfig {
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter())
                         ))
-//                .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults());
 
         return http.build();
@@ -216,20 +270,31 @@ public class AuthServerConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        // Deve liberar o cors somente em ambiente de desenvolvimento
-        final CorsConfiguration configuration = new CorsConfiguration();
+        final var configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-        configuration.setAllowedHeaders(Arrays.asList("access-control-allow-origin", "x-requested-with", "authorization", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Origin", "Cache-Control", "Content-Type", "Authorization", "TenantIdentification"));
+        configuration.setAllowedHeaders(Arrays.asList(
+                "Origin",
+                "Content-Type",
+                "Cache-Control",
+                "authorization",
+                "Authorization",
+                "x-requested-with",
+                "TenantIdentification",
+                "access-control-allow-origin",
+                "Access-Control-Allow-Headers",
+                "Access-Control-Request-Method",
+                "Access-Control-Request-Headers",
+                "Access-Control-Allow-Origin"));
+
         configuration.setAllowedMethods(Arrays.asList("OPTIONS", "DELETE", "GET", "POST", "PATCH", "PUT"));
 
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
         return source;
@@ -237,8 +302,6 @@ public class AuthServerConfig {
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder()
-                .issuer("http://localhost:8080")
-                .build();
+        return AuthorizationServerSettings.builder().issuer("http://localhost:8089").build();
     }
 }

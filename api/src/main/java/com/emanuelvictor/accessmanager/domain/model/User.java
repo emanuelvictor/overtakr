@@ -2,6 +2,7 @@ package com.emanuelvictor.accessmanager.domain.model;
 
 import com.emanuelvictor.common.infrastructure.jpa.PersistentEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -58,18 +59,22 @@ public class User extends PersistentEntity implements UserDetails {
     public User() {
     }
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public boolean isEnabled() {
         return this.enabled;
     }
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public boolean isAccountNonLocked() {
         return !locked;
     }
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public boolean isCredentialsNonExpired() {
         return true;
     }
@@ -77,6 +82,7 @@ public class User extends PersistentEntity implements UserDetails {
     @Transient
     private Set<Permission> authorities;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public Long getGroupId() {
         return group.getId();
     }

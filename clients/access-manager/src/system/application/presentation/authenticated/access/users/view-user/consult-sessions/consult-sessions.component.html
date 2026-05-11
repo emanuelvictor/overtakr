@@ -1,0 +1,47 @@
+<div id="default-table">
+    <mat-table #table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="sid">
+            <mat-header-cell *matHeaderCellDef>
+                JsessionId
+            </mat-header-cell>
+            <mat-cell *matCellDef='let data'>
+                {{ data.sid }}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="principalName">
+            <mat-header-cell *matHeaderCellDef>
+                Username
+            </mat-header-cell>
+            <mat-cell *matCellDef='let data'>
+                {{ data.principalName }}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="acoes">
+            <mat-header-cell *matHeaderCellDef class="actions">Ações</mat-header-cell>
+            <mat-cell *matCellDef="let data" class="actions">
+                <button mat-icon-button [matMenuTriggerFor]="appMenu" aria-label="">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #appMenu="matMenu">
+                    <ng-container [@fadeInOut] *hasPermission="['root', 'root.access-manager',
+                                  'root.access-manager.sessions', 'root.access-manager.sessions.delete']; operation 'OR'">
+                        <button mat-menu-item (click)="delete(data.sid)">
+                            Excluir
+                        </button>
+                    </ng-container>
+                </mat-menu>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let data; columns: displayedColumns"></mat-row>
+    </mat-table>
+    <no-records-found [dataSource]="dataSource?.data"></no-records-found>
+    <mat-paginator [pageSizeOptions]="[10, 20, 50, 100]"
+                   [length]="totalElements" [pageIndex]="pageIndex"
+                   [pageSize]="pageSize" [hidePageSize]="false" (page)="listByFilters()">
+    </mat-paginator>
+</div>

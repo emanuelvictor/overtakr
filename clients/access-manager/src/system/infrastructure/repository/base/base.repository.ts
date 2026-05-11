@@ -28,7 +28,7 @@ export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
     return this.httpClient.put<T>(this.collectionName + '/' + id, item).toPromise();
   }
 
-  delete(id: number): Promise<void> {
+  delete(id: number | string): Promise<void> {
     return this.httpClient.delete<void>(this.collectionName + '/' + id).toPromise();
   }
 

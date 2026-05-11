@@ -16,7 +16,10 @@ public class EntityIdResolver implements ObjectIdResolver {
     /**
      *
      */
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
+
+    public EntityIdResolver() {
+    }
 
     /**
      * @param entityManager {@link EntityManager}

@@ -2,13 +2,13 @@ spring:
   application.name: erp
 
   datasource:
-    username: erp
-    password: erp
+    username: hubti
+    password: hubti
     hikari.pool-name: ${spring.application.name}
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
     hikari.maximum-pool-size: 10
-    url: jdbc:postgresql://localhost:5432/erp
+    url: jdbc:postgresql://localhost:5432/hubti
 
   #JPA
   jpa:
@@ -69,3 +69,5 @@ info:
   description: 'ERP'
   version: nana
   environment: nana
+server:
+  port: 8089

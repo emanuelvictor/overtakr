@@ -19,6 +19,12 @@
         Tenants
     </a>
 
+    <a class='ml-25' layout-margin routerLinkActive
+       [ngClass]="{'menu-active': rlaApplications.isActive}"
+       routerLink='test-access' #rlaApplications='routerLinkActive'>
+       Test Access
+    </a>
+
 </div>
 
 <div class='main-content'>

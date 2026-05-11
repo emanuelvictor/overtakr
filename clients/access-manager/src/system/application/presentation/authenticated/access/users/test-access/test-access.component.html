@@ -1,0 +1,13 @@
+<div layout='column' flex layout-align='center center'>
+    <button mat-raised-button type='button' color="primary" (click)="public()">Public</button>
+    <vertical-space></vertical-space>
+    <button mat-raised-button type='button' color="primary" (click)="secure()">Secure</button>
+    <vertical-space></vertical-space>
+    <button mat-raised-button type='button' color="primary" (click)="claims()">Claims</button>
+    <vertical-space></vertical-space>
+    <button mat-raised-button type='button' color="primary" (click)="nonExistentAuthority()">
+        Non Existent Authority
+    </button>
+    <vertical-space></vertical-space>
+    <button mat-raised-button type='button' color="primary" (click)="root()">Root</button>
+</div>

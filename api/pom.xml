@@ -29,6 +29,8 @@
         <lombok.version>1.18.38</lombok.version>
         <arch-unit.version>1.4.0</arch-unit.version>
         <frontend-maven-plugin.version>1.15.1</frontend-maven-plugin.version>
+        <lettuce-core.version>6.1.10.RELEASE</lettuce-core.version>
+        <java-common.version>2.7.1</java-common.version>
     </properties>
 
     <dependencies>
@@ -153,7 +155,17 @@
             <version>${arch-unit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>${lettuce-core.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>br.org.itaipuparquetec</groupId>
+            <artifactId>java-common</artifactId>
+            <version>${java-common.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -283,5 +295,27 @@
             </plugin>
         </plugins>
     </build>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
+            <id>itaipu-internal</id>
+            <url>https://fsoft-repository.itaipuparquetec.org.br/repository/maven-releases/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>
