@@ -78,8 +78,8 @@ public class SidAwareJdbcOAuth2AuthorizationService implements OAuth2Authorizati
         var requestAttrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (requestAttrs != null) {
             var session = requestAttrs.getRequest().getSession(false);
-            if (session != null && authorization.getAttribute("sid") == null) {
-                authorization = OAuth2Authorization.from(authorization)
+            if (session != null && authorization.getAttribute("sid") == null) { // TODO se remvoer isso, não precisa  desta classe. É possível remover isso, ou ainda vamos precisar do SID?
+                authorization = OAuth2Authorization.from(authorization)               // TODO Vou precisar se quiser revogar o SID quando revogar o token.
                         .attribute("sid", session.getId())
                         .build();
             }

@@ -54,6 +54,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.session.MapSessionRepository;
+import org.springframework.session.SessionRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -66,6 +68,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -186,8 +189,7 @@ public class AuthServerConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain authorizationServerFilterChain(HttpSecurity http, ResourceServerNotifier resourceServerNotifier,
-                                                              OAuth2AuthorizationService authorizationService) throws Exception {
+    public SecurityFilterChain authorizationServerFilterChain(HttpSecurity http) throws Exception {
 
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
@@ -201,27 +203,6 @@ public class AuthServerConfig {
                             ));
                         })
                 )
-//                    .tokenRevocationEndpoint(revocation -> revocation
-//                            .revocationResponseHandler((request, response, authentication) -> {
-//                                var token = (OAuth2TokenRevocationAuthenticationToken) authentication;
-//
-//                                var authorization = authorizationService.findByToken(token.getToken(), OAuth2TokenType.REFRESH_TOKEN);
-//                                if (authorization == null)
-//                                    authorization = authorizationService.findByToken(token.getToken(), OAuth2TokenType.ACCESS_TOKEN);
-//
-//                                if (authorization != null) {
-//                                    final var accessToken = authorization.getAccessToken();
-//                                    if (accessToken != null && accessToken.getClaims() != null) {
-//                                        final var sid = (String) accessToken.getClaims().get("sid");
-//                                        if (sid != null) {
-//                                            resourceServerNotifier.revoke(sid);
-//                                        }
-//                                    }
-//                                }
-//
-//                                response.setStatus(HttpServletResponse.SC_OK);
-//                            })
-//                    )
                 .oidc(Customizer.withDefaults());
 
         http.exceptionHandling(exceptions -> exceptions
@@ -259,7 +240,8 @@ public class AuthServerConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(UserRepository userRepository, GroupPermissionRepository groupPermissionRepository) {
+    public UserDetailsService userDetailsService(UserRepository userRepository,
+                                                 GroupPermissionRepository groupPermissionRepository) {
         return username -> {
             final var user = userRepository.findByUsername(username).orElseThrow();
             final var authorities = groupPermissionRepository.findByGroupId(user.getGroupId(), null)
@@ -299,6 +281,9 @@ public class AuthServerConfig {
 
         return source;
     }
+
+    ///  TODO DEVE REVOGAR OS TOKENS
+    /// TODO DEVE HAVER A FUNCIONALIDADE DE BLOQUEAR O USUÁRIO
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {

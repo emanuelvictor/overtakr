@@ -99,8 +99,10 @@ export class Interceptor implements HttpInterceptor {
       if (res.status === 403)
         this.error('Acesso negado!')
 
-      if (res.status === 401)
+      if (res.status === 401) {
         this.error( 'Acesso negado!');
+        this.authenticationService.authorizationCode(window.location.href.substring(window.location.href.indexOf('#/') + 1, window.location.href.length))
+      }
 
       return this.innerHandler(res);
     };

@@ -125,9 +125,9 @@ import {ProductsViewComponent} from "./presentation/authenticated/stock/products
 import {InventoryViewComponent} from "./presentation/authenticated/stock/inventory-view.component";
 import {TestAccessComponent} from "./presentation/authenticated/access/users/test-access/test-access.component";
 import {
-    ConsultSessionsComponent
-} from "./presentation/authenticated/access/users/view-user/consult-sessions/consult-sessions.component";
-import {SessionRepository} from "../domain/repository/session.repository";
+    ConsultAuthorizationsComponent
+} from "./presentation/authenticated/access/users/view-user/consult-authorizations/consult-authorizations.component";
+import {AuthorizationRepository} from "../domain/repository/authorization.repository";
 
 const appearance: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -222,7 +222,7 @@ export function customTranslateLoader(http: HttpClient) {
         LinkPermissionsComponent,
         UpdatePasswordComponent,
         TestAccessComponent,
-        ConsultSessionsComponent,
+        ConsultAuthorizationsComponent,
 
         DataComponent,
 
@@ -269,7 +269,7 @@ export function customTranslateLoader(http: HttpClient) {
         TenantRepository,
         AccessGroupPermissionRepository,
         ProductRepository,
-        SessionRepository,
+        AuthorizationRepository,
 
         // Services
         Describer,

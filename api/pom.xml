@@ -160,7 +160,10 @@
             <artifactId>lettuce-core</artifactId>
             <version>${lettuce-core.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-core</artifactId>
+        </dependency>
         <dependency>
             <groupId>br.org.itaipuparquetec</groupId>
             <artifactId>java-common</artifactId>

@@ -8,13 +8,9 @@ import {
 } from '@angular/material';
 import {tdCollapseAnimation} from '@covalent/core';
 import {debounce} from '../../../../../../utils/debounce';
-import {SessionRepository} from "../../../../../../../domain/repository/session.repository";
+import {AuthorizationRepository} from "../../../../../../../domain/repository/authorization.repository";
 import {MatTableDataSource} from "@angular/material/table";
 import {handlePageable} from "../../../../../../utils/handle-data-table";
-import {Observable} from "rxjs";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {tap} from "rxjs/operators";
-import {AuthenticationService} from "../../../../../../../domain/services/authentication.service";
 
 const appearance: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -22,8 +18,8 @@ const appearance: MatFormFieldDefaultOptions = {
 
 // @ts-ignore
 @Component({
-    selector: 'consult-sessions',
-    templateUrl: 'consult-sessions.component.html',
+    selector: 'consult-authorizations',
+    templateUrl: 'consult-authorizations.component.html',
     animations: [tdCollapseAnimation],
     providers: [
         {
@@ -32,7 +28,7 @@ const appearance: MatFormFieldDefaultOptions = {
         }
     ]
 })
-export class ConsultSessionsComponent implements OnInit {
+export class ConsultAuthorizationsComponent implements OnInit {
 
     @ViewChild(MatMenuTrigger, {static: true}) trigger: MatMenuTrigger;
     @ViewChild(MatPaginator, {static: true}) public paginator: MatPaginator; // Bind com o objeto paginator
@@ -42,7 +38,7 @@ export class ConsultSessionsComponent implements OnInit {
 
     // Tabela
     @Input() dataSource: any;
-    displayedColumns: string[] = ['sid', 'principalName', 'acoes'];
+    displayedColumns: string[] = ['sid', 'principalName', 'token', 'acoes'];
     @Input() totalElements: any;
     @Input() pageSize: any;
     @Input() pageIndex: any;
@@ -54,7 +50,7 @@ export class ConsultSessionsComponent implements OnInit {
         defaultFilter: []
     };
 
-    public constructor(private sessionRepository: SessionRepository) {
+    public constructor(private authorizationRepository: AuthorizationRepository) {
     }
 
     ngOnInit() {
@@ -64,7 +60,7 @@ export class ConsultSessionsComponent implements OnInit {
     listByFilters = () => {
         const pageable = handlePageable(false, this.paginator, this.pageable);
         pageable.principalName = this.principalName;
-        this.sessionRepository.listByFilters(pageable).subscribe(result => {
+        this.authorizationRepository.listByFilters(pageable).subscribe(result => {
             this.dataSource = new MatTableDataSource(result.content);
             this.totalElements = result.totalElements;
             this.pageSize = result.size;
@@ -73,8 +69,8 @@ export class ConsultSessionsComponent implements OnInit {
         this.paginator.pageSize = this.pageSize;
     };
 
-    delete(sid: string): void {
-        this.sessionRepository.delete(sid).then(() => {
+    delete(token: string): void {
+        this.authorizationRepository.delete(token).then(() => {
             this.listByFilters()
         });
     }

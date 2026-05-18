@@ -15,7 +15,7 @@ import static com.emanuelvictor.Main.DEFAULT_TENANT_IDENTIFICATION;
 @Data
 @Entity
 @Table(schema = DEFAULT_TENANT_IDENTIFICATION, name = "oauth2_authorization")
-public class SessionJPA {
+public class AuthorizationJPA {
 
     @Id
     @Getter
@@ -28,4 +28,5 @@ public class SessionJPA {
 
     private String sid;
     private String accessTokenValue;
+    private String refreshTokenValue;
 }

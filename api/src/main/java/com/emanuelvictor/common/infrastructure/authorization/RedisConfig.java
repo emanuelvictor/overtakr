@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class RedisConfig {
+public class RedisConfig { // TODO substituir pelo kafka
 
     @Bean(destroyMethod = "shutdown")
     public RedisClient redisClient() {

@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ResourceServerNotifier {
 
-    public void revoke(String sid) {
+    public void revoke(String token) {
         try (final var connection = redisClient().connectPubSub()) {
             final var async = connection.async();
-            async.publish("revoke-token-redis-channel", sid);
+            async.publish("revoke-token-redis-channel", token); // TODO substituir pelo kafka
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

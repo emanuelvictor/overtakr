@@ -19,6 +19,15 @@
             </mat-cell>
         </ng-container>
 
+      <ng-container matColumnDef="token">
+        <mat-header-cell *matHeaderCellDef>
+          Token
+        </mat-header-cell>
+        <mat-cell *matCellDef='let data'>
+          {{ data.token }}
+        </mat-cell>
+      </ng-container>
+
         <ng-container matColumnDef="acoes">
             <mat-header-cell *matHeaderCellDef class="actions">Ações</mat-header-cell>
             <mat-cell *matCellDef="let data" class="actions">
@@ -27,8 +36,8 @@
                 </button>
                 <mat-menu #appMenu="matMenu">
                     <ng-container [@fadeInOut] *hasPermission="['root', 'root.access-manager',
-                                  'root.access-manager.sessions', 'root.access-manager.sessions.delete']; operation 'OR'">
-                        <button mat-menu-item (click)="delete(data.sid)">
+                                  'root.access-manager.authorizations', 'root.access-manager.authorizations.delete']; operation 'OR'">
+                        <button mat-menu-item (click)="delete(data.token)">
                             Excluir
                         </button>
                     </ng-container>
